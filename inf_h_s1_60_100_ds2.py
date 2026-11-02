@@ -49,7 +49,7 @@ class InferConfig:
     #   Stage 2 模型 -> ckpt_stage2.pth + d2_idx_642_val.parquet
     #   Stage 3+模型 -> ckpt_stage3.pth + d3_m15_778_val.parquet
     ckpt_file: str = "h_s1_60_100.pth" # "ckpt_stage1.pth"  #   🔴🔴
-    val_parquet: str = "h_s1_60_ds2.parquet"
+    val_parquet: str = "ds_h_s1_60_ds2.parquet"
     output_csv: str = "pred_h_s1_60_inf2.csv"
 
     # === [B] 目标分箱概率和配置 ===
