@@ -128,8 +128,8 @@ class StageConfig:
 
     # === [G] 验证早停 vs 实盘全量裸跑控制 ===
     use_val: bool = False        #              # False: 进入【实盘裸跑模式】，不加载验证集，按平滑训练 Loss 或步数停机   # 🔴🔴
-    eval_interval_steps: int = 200    # 200 🔴🔴
-    patience: int = 3
+    eval_interval_steps: int = 100    # 200 🔴🔴
+    patience: int = 5
     anchor_on_last_h: bool = True            # True: 无论当前 Stage 训练什么 Loss，一律以验证集 Last-H Loss 作为保存最优模型的唯一标准
     max_train_steps: int = 1200
     # max_train_steps: int = 3000      # 决定学习率余弦退火的总周期 (保持与验证集一致，如 3000 或 1200)
@@ -901,17 +901,21 @@ def run_stage_training(cfg: StageConfig):
                         _save_stage_checkpoint('smoothed_train_loss', smoothed_train_loss,
                                                {'smoothed_train_loss': smoothed_train_loss, 'step': global_step})
                         print(f"   ★ [{cfg.stage_name}] 平滑 Train Loss 创新低，模型已保存 -> {save_path}")
+                    """
                     if smoothed_train_loss <= cfg.target_train_loss:
                         print(f"\n★ 达成实盘裸跑目标 Loss ({smoothed_train_loss:.4f} <= {cfg.target_train_loss})！模型已锁定 -> {save_path}")
                         break
+                    """
 
             if global_step >= run_limit_steps:    # 🔴🟢
                 break
 
         if (val_data_gpu is not None and patience_counter >= cfg.patience) or global_step >= run_limit_steps:  # 🔴🟢
             break
+        """
         if val_data_gpu is None and smoothed_train_loss <= cfg.target_train_loss:
             break
+        """
 
     print(f"\n>> [{cfg.stage_name}] 训练结束，权重保存在: {save_path}")
     return model
